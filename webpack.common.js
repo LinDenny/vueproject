@@ -1,32 +1,53 @@
 const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 module.exports = {
   entry: {
-    app: ['./src/main.js'],
-    print: './src/print.js'
+    app: './src/main.js'
   },
   output: {
     filename: '[name].bundle.js',
     publicPath: './',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    chunkFilename: '[name]-[chunkhash:8].js'
+  },
+  resolve: {
+    extensions: ['.js', '.vue', '.json'],
+    alias: {
+      'vue$': 'vue/dist/vue.esm.js',
+      '@': path.resolve(__dirname, 'src/')
+    }
   },
   module: {
     rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
         }
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          'style-loader',
+          // Translates CSS into CommonJS
+          'css-loader',
+          // Compiles Sass to CSS
+          'sass-loader',
+        ],
       },
       {
         test: /\.css$/,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           'css-loader'
         ]
       },
@@ -47,24 +68,28 @@ module.exports = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      title: 'Production'
+      template: 'index.html',
+      title: process.env.NODE_ENV || '标题'
+    }),
+    new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'static/css/style.css'
     }),
   ],
-  optimization: {
-    // webpack 模块里面的splitChunks
-    splitChunks: {
-      // 抽离入口文件公共模块为commmons模块
-      cacheGroups: {
-        commons: {
-          name: "commons",
-          chunks: "initial",
-          minChunks: 2
-        }
-      }
-    }
-  },
+  /*  optimization: {
+     // webpack 模块里面的splitChunks
+     splitChunks: {
+       // 抽离入口文件公共模块为commmons模块
+       cacheGroups: {
+         commons: {
+           name: "commons",
+           chunks: "initial",
+           minChunks: 2
+         }
+       }
+     }
+   }, */
   performance: {
     hints: 'warning',
     //入口起点的最大体积
