@@ -8,10 +8,10 @@ module.exports = {
     app: './src/main.js'
   },
   output: {
-    filename: '[name].bundle.js',
+    filename: 'js/[name].bundle.js',
     publicPath: './',
     path: path.resolve(__dirname, 'dist'),
-    chunkFilename: '[name]-[chunkhash:8].js'
+    chunkFilename: 'js/[name]-[chunkhash:8].js'
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],

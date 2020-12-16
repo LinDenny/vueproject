@@ -1,20 +1,24 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import lazyLoadView from '@/utils/lazyload';
+const home = () => lazyLoadView(import(/* webpackChunkName: "home" */ '@/pages/home/index.vue'));
+const profile = () => lazyLoadView(import(/* webpackChunkName: "profile" */ '@/pages/profile/index.vue'));
+const notFund = () => lazyLoadView(import(/* webpackChunkName: "404" */ '@/pages/404/index.vue'));
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/home',
-    component: () => import(/* webpackChunkName: "home" */ '@/pages/home/index.vue')
+    component: home
   },
   {
     path: '/profile',
-    component: () => import(/* webpackChunkName: "profile" */ '@/pages/profile/index.vue')
+    component: profile
   },
   {
     path: '/404',
-    component: () => import(/* webpackChunkName: "404" */ '@/pages/404/index.vue')
+    component: notFund
   },
   {
     path: '/',
